@@ -4,6 +4,7 @@ const Validator = require("validator")
 const Carousel = require("../models/Carousel")
 const { checkEmpty } = require("../utils/cheackEmpty")
 const Enquery = require("../models/Enquery")
+const sendEmail = require("../utils/email")
 
 exports.fetchProjects = asyncHandler(async (req, res) => {
     const result = await Projects.find()
@@ -35,8 +36,19 @@ exports.AddEnqueryMessage = asyncHandler(async (req, res) => {
     if (!Validator.isMobilePhone(mobile, "en-IN")) {
         return res.status(400).json({ message: "Invalid Mobile" })
     }
+    sendEmail({
+        to: process.env.MY_EMAIL,
+        message: `Company: ${company}, email: ${email}, mobile: ${mobile}, message: ${message}`,
+        subject: ` New Enquery From ${company}`
+    })
+    sendEmail({
+        to: email,
+        message: `Thank You For Enquery. I will get in touch with you Soon `,
+        subject: ` Thank You For your intrest`
+    })
     await Enquery.create({ name, email, mobile, message, company })
     res.json({ message: "Enquery Message Added Success...!", })
+
 })
 exports.updateEnqueryMessage = asyncHandler(async (req, res) => {
     await Enquery.findByIdAndUpdate(req.params.id, req.body)
