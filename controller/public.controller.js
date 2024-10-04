@@ -29,10 +29,10 @@ exports.AddEnqueryMessage = asyncHandler(async (req, res) => {
     if (isError) {
         return res.status(400).json({ message: "All Fields Required", error })
     }
-    if (!validator.isEmail(email)) {
+    if (!Validator.isEmail(email)) {
         return res.status(400).json({ message: "Invalid Email" })
     }
-    if (!validator.isMobilePhone(mobile, "en-IN")) {
+    if (!Validator.isMobilePhone(mobile, "en-IN")) {
         return res.status(400).json({ message: "Invalid Mobile" })
     }
     await Enquery.create({ name, email, mobile, message, company })
@@ -46,3 +46,6 @@ exports.deleteEnqueryMessage = asyncHandler(async (req, res) => {
     await Enquery.findByIdAndDelete(req.params.id,)
     res.json({ message: "Enquery Message Delete Success...!", })
 })
+
+
+
